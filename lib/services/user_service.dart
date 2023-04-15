@@ -8,7 +8,7 @@ class UserService extends GetxService {
   Future<UserService> init() async {
     var json = AppUtil.getJson('user');
     if (json != null) {
-      user = UserEntity(id: json['id'], token: json['token']);
+      user = UserEntity(token: json['token']);
     }
     return this;
   }
