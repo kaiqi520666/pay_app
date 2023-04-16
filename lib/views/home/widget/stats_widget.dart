@@ -2,6 +2,7 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:pay_app/views/home/home_controller.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -24,10 +25,34 @@ class StatsWidget extends StatelessWidget {
                     children: [
                       ListTile(
                         leading: SvgPicture.asset(
+                          'assets/svg/day.svg',
+                          width: 25,
+                        ),
+                        title: const Text('日期'),
+                        subtitle: Obx(() => Text(controller.day.toString())),
+                        trailing: const Icon(Icons.arrow_forward_ios),
+                        onTap: () {
+                          showDatePicker(
+                                  context: context,
+                                  initialDate:
+                                      DateTime.parse(controller.day.value),
+                                  firstDate: DateTime(2015, 8),
+                                  lastDate: DateTime(2101))
+                              .then((value) {
+                            if (value != null) {
+                              controller.day.value =
+                                  DateFormat('yyyy-MM-dd').format(value);
+                              controller.findStats();
+                            }
+                          });
+                        },
+                      ),
+                      ListTile(
+                        leading: SvgPicture.asset(
                           'assets/svg/order_count.svg',
                           width: 25,
                         ),
-                        title: const Text('今日订单数量'),
+                        title: const Text('订单数量'),
                         trailing:
                             Obx(() => Text(controller.orderCount.toString())),
                       ),
@@ -36,7 +61,7 @@ class StatsWidget extends StatelessWidget {
                           'assets/svg/order_amount.svg',
                           width: 25,
                         ),
-                        title: const Text('今日订单金额'),
+                        title: const Text('订单金额'),
                         trailing:
                             Obx(() => Text(controller.orderAmount.toString())),
                       ),

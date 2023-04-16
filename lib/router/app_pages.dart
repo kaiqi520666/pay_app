@@ -1,4 +1,6 @@
 import 'package:get/get.dart';
+import 'package:pay_app/views/search/search_binding.dart';
+import 'package:pay_app/views/search/search_view.dart';
 import '../views/home/home_binding.dart';
 import '../views/home/home_view.dart';
 import '../views/splash/splash_view.dart';
@@ -25,6 +27,11 @@ abstract class AppPages {
       name: AppRouter.splash,
       page: () => const SplashView(),
       binding: SplashBinding(),
+    ),
+    GetPage(
+      name: AppRouter.search,
+      page: () => const SearchView(),
+      binding: SearchBinding(),
     )
   ];
 }

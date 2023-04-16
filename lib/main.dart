@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:get/get.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 import 'manage/initialization_manage.dart';
@@ -53,6 +54,16 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: AppPages.initial,
         getPages: AppPages.routes,
+        locale: const Locale('zh', 'CN'),
+        localizationsDelegates: const [
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: const [
+          Locale('en', 'US'),
+          Locale('zh', 'CN'),
+        ],
       ),
     );
   }

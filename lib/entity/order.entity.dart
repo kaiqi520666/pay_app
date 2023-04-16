@@ -71,3 +71,11 @@ class Order24hEntity {
   double? amount;
   Order24hEntity({this.id, this.amount});
 }
+
+class QueryOrderEntity {
+  String? orderId;
+  String? outOrderId;
+  String? startTime;
+  String? endTime;
+  int? status;
+}

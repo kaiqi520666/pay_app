@@ -21,11 +21,14 @@ class HomeController extends GetxController {
   final RefreshController myRefreshController = RefreshController();
   var myOrderHasData = false;
   var myLoading = false.obs;
+  var day = DateFormat('yyyy-MM-dd').format(DateTime.now()).obs;
 //订单总金额
   var orderAmount = 0.0.obs;
   var pageController = PageController();
   var myOrdersOffset = 0;
   var user = UserEntity().obs;
+  var queryOrder = QueryOrderEntity();
+  var orderLoading = false.obs;
   @override
   void onInit() {
     super.onInit();
@@ -35,9 +38,16 @@ class HomeController extends GetxController {
   }
 
   Future<void> findStats() async {
-    var response = await homeProvider.getStats();
+    orders.clear();
+    orders24h.clear();
+    orderCount.value = 0;
+    orderAmount.value = 0.0;
+    //tomorrow
+    var endTime = DateFormat('yyyy-MM-dd')
+        .format(DateTime.parse(day.value).add(const Duration(days: 1)));
+    var response = await homeProvider.getStats(day.value, endTime);
     if (response.body['code'] == 200) {
-      response.body['orders'].forEach((v) {
+      response.body['records'][0].forEach((v) {
         orders.add(OrderEntity.fromJson(v));
       });
     }
@@ -60,7 +70,7 @@ class HomeController extends GetxController {
   }
 
   Future<void> findOrders() async {
-    var response = await homeProvider.getOrders(myOrdersOffset);
+    var response = await homeProvider.getOrders(myOrdersOffset, queryOrder);
     if (response.body['code'] == 200) {
       response.body['records'][0].forEach((v) {
         myOrders.add(OrderEntity.fromJson(v));
@@ -72,7 +82,9 @@ class HomeController extends GetxController {
   Future<void> onMyOrdersRefresh() async {
     myOrders.clear();
     myOrdersOffset = 0;
+    orderLoading.value = true;
     await findOrders();
+    orderLoading.value = false;
     refreshController.refreshCompleted();
     if (myOrderHasData) {
       refreshController.loadComplete();
@@ -104,10 +116,6 @@ class HomeController extends GetxController {
   }
 
   Future<void> onStatsRefresh() async {
-    orders.clear();
-    orders24h.clear();
-    orderCount.value = 0;
-    orderAmount.value = 0.0;
     await findStats();
     statsRefreshController.refreshCompleted();
   }
@@ -115,5 +123,21 @@ class HomeController extends GetxController {
   void logout() {
     AppUtil.remove('user');
     Get.offNamed('/login');
+  }
+
+  void toSearch() {
+    Get.toNamed('/search', arguments: currentIndex.value, parameters: {
+      'id': currentIndex.value.toString(),
+    })!
+        .then((value) async {
+      if (value != null) {
+        queryOrder = value as QueryOrderEntity;
+        myOrders.clear();
+        myOrdersOffset = 0;
+        orderLoading.value = true;
+        await findOrders();
+        orderLoading.value = false;
+      }
+    });
   }
 }

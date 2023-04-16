@@ -24,6 +24,11 @@ class HomeView extends GetView<HomeController> {
             MyWidget(controller: controller),
           ],
         )),
+        floatingActionButton: Obx(() => controller.currentIndex.value > 0 &&
+                controller.currentIndex.value < 3
+            ? FloatingActionButton(
+                onPressed: controller.toSearch, child: const Icon(Icons.search))
+            : Container()),
         bottomNavigationBar: Obx(() => BottomNavigationBar(
               type: BottomNavigationBarType.fixed,
               items: [

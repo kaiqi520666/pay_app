@@ -3,4 +3,5 @@ abstract class AppRouter {
   static const home = '/home';
   static const account = '/account';
   static const login = '/login';
+  static const search = '/search';
 }
